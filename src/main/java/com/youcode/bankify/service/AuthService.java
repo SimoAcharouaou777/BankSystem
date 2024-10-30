@@ -1,6 +1,7 @@
 package com.youcode.bankify.service;
 
 
+import com.youcode.bankify.dto.RegisterRequest;
 import com.youcode.bankify.entity.User;
 import com.youcode.bankify.repository.UserRepository;
 import org.mindrot.jbcrypt.BCrypt;
@@ -20,11 +21,13 @@ public class AuthService {
         this.userRepository = userRepository;
     }
 
-    public String register(User user){
-        if(userRepository.findByUsername(user.getUsername()).isPresent()){
+    public String register(RegisterRequest registerRequest){
+        if(userRepository.findByUsername(registerRequest.getUsername()).isPresent()){
             return "Username is already existe";
         }
-        user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+        User user = new User();
+        user.setUsername(registerRequest.getUsername());
+        user.setPassword(BCrypt.hashpw(registerRequest.getPassword(), BCrypt.gensalt()));
         user.setEnabled(true);
         userRepository.save(user);
         return "user registered sucessfully";

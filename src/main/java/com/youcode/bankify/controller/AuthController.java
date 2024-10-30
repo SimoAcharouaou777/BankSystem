@@ -1,6 +1,8 @@
 package com.youcode.bankify.controller;
 
 
+import com.youcode.bankify.dto.LoginRequest;
+import com.youcode.bankify.dto.RegisterRequest;
 import com.youcode.bankify.entity.User;
 import com.youcode.bankify.repository.UserRepository;
 import com.youcode.bankify.service.AuthService;
@@ -21,8 +23,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody User user){
-        String response = authService.register(user);
+    public ResponseEntity<String> registerUser(@RequestBody RegisterRequest registerRequest){
+        String response = authService.register(registerRequest);
         if(response.equals("User registered successfully")){
             return ResponseEntity.ok(response);
         }else{
@@ -31,8 +33,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestParam String username, @RequestParam String password){
-        String response = authService.authenticate(username, password);
+    public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest){
+        String response = authService.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
         if(response.equals("Authentication successful")){
             return ResponseEntity.ok(response);
         } else {
