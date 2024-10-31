@@ -1,0 +1,153 @@
+databaseChangeLog:
+  - changeSet:
+      id: "1"
+      author: "SimoAcharouaou777"
+      changes:
+        - createTable:
+            tableName: "roles"
+            columns:
+              - column:
+                  name: "id"
+                  type: "bigint"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "name"
+                  type: "varchar(255)"
+                  constraints:
+                    unique: true
+                    nullable: false
+  - changeSet:
+      id: "2"
+      author: "SimoAcharouaou777"
+      changes:
+        - createTable:
+            tableName: "users"
+            columns:
+              - column:
+                  name: "id"
+                  type: "bigint"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "username"
+                  type: "varchar(255)"
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: "password"
+                  type: "varchar(255)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "enabled"
+                  type: "boolean"
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: "3"
+      author: "SimoAcharouaou777"
+      changes:
+        - createTable:
+            tableName: "user_roles"
+            columns:
+              - column:
+                  name: "user_id"
+                  type: "bigint"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "role_id"
+                  type: "bigint"
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: "user_roles"
+            baseColumnNames: "user_id"
+            referencedTableName: "users"
+            referencedColumnNames: "id"
+            constraintName: "fk_user_roles_user"
+        - addForeignKeyConstraint:
+            baseTableName: "user_roles"
+            baseColumnNames: "role_id"
+            referencedTableName: "roles"
+            referencedColumnNames: "id"
+            constraintName: "fk_user_roles_role"
+  - changeSet:
+      id: "4"
+      author: "SimoAcharouaou777"
+      changes:
+        - createTable:
+            tableName: "bank_account"
+            columns:
+              - column:
+                  name: "id"
+                  type: "bigint"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "account_number"
+                  type: "varchar(255)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "balance"
+                  type: "decimal(19,2)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "user_id"
+                  type: "bigint"
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: "bank_account"
+            baseColumnNames: "user_id"
+            referencedTableName: "users"
+            referencedColumnNames: "id"
+            constraintName: "fk_bank_account_user"
+  - changeSet:
+      id: "5"
+      author: "SimoAcharouaou777"
+      changes:
+        - createTable:
+            tableName: "transaction"
+            columns:
+              - column:
+                  name: "id"
+                  type: "bigint"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "amount"
+                  type: "decimal(19,2)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "type"
+                  type: "varchar(50)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "date"
+                  type: "timestamp"
+              - column:
+                  name: "bank_account_id"
+                  type: "bigint"
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: "transaction"
+            baseColumnNames: "bank_account_id"
+            referencedTableName: "bank_account"
+            referencedColumnNames: "id"
+            constraintName: "fk_transaction_bank_account"
