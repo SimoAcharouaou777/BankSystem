@@ -2,23 +2,28 @@ package com.youcode.bankify.service;
 
 
 import com.youcode.bankify.dto.RegisterRequest;
+import com.youcode.bankify.entity.Role;
 import com.youcode.bankify.entity.User;
+import com.youcode.bankify.repository.RoleRepository;
 import com.youcode.bankify.repository.UserRepository;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
 
     @Autowired
-    public AuthService(UserRepository userRepository){
+    public AuthService(UserRepository userRepository, RoleRepository roleRepository){
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     public String register(RegisterRequest registerRequest){
@@ -29,6 +34,10 @@ public class AuthService {
         user.setUsername(registerRequest.getUsername());
         user.setPassword(BCrypt.hashpw(registerRequest.getPassword(), BCrypt.gensalt()));
         user.setEnabled(true);
+
+        Role userRole = roleRepository.findByName("USER")
+                        .orElseThrow(() -> new RuntimeException("Role not found"));
+        user.setRoles(Collections.singleton(userRole));
         userRepository.save(user);
         return "user registered sucessfully";
     }
