@@ -27,4 +27,8 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "bank_account_id", nullable = false)
     private BankAccount bankAccount;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
