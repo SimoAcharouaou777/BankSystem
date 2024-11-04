@@ -2,12 +2,16 @@ package com.youcode.bankify.entity;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Locale;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "Transaction")
 public class Transaction {
 

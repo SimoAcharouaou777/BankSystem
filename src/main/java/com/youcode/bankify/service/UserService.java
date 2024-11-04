@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -50,15 +51,36 @@ public class UserService {
         BankAccount toAccount = accountRepository.findById(transferRequest.getToAccount())
                 .orElseThrow(() -> new RuntimeException("To account not found"));
 
+        BigDecimal transferAmount = BigDecimal.valueOf(transferRequest.getAmount());
+
         if(fromAccount.getBalance().compareTo(BigDecimal.valueOf(transferRequest.getAmount())) < 0 ){
             throw  new RuntimeException("Insufficient funds");
         }
 
-        fromAccount.setBalance(fromAccount.getBalance().subtract(BigDecimal.valueOf(transferRequest.getAmount())));
-        toAccount.setBalance(toAccount.getBalance().add(BigDecimal.valueOf(transferRequest.getAmount())));
+        fromAccount.setBalance(fromAccount.getBalance().subtract(transferAmount));
+        toAccount.setBalance(toAccount.getBalance().add(transferAmount));
 
         accountRepository.save(fromAccount);
         accountRepository.save(toAccount);
+
+        LocalDateTime transactionDate = LocalDateTime.now();
+
+        Transaction debitTransaction = new Transaction();
+        debitTransaction.setAmount(transferAmount);
+        debitTransaction.setType("DEBIT");
+        debitTransaction.setDate(transactionDate);
+        debitTransaction.setBankAccount(fromAccount);
+        debitTransaction.setUser(fromAccount.getUser());
+
+        Transaction creditTransaction = new Transaction();
+        creditTransaction.setAmount(transferAmount);
+        creditTransaction.setType("CREDIT");
+        creditTransaction.setDate(transactionDate);
+        creditTransaction.setBankAccount(toAccount);
+        creditTransaction.setUser(toAccount.getUser());
+
+        transactionRepository.save(debitTransaction);
+        transactionRepository.save(creditTransaction);
 
 
     }

@@ -163,3 +163,21 @@ databaseChangeLog:
                   type: "varchar(50)"
                   constraints:
                     nullable: false
+  - changeSet:
+      id: "7"
+      author: "simoacharouaou777"
+      changes:
+        - addColumn:
+            tableName: "transaction"
+            columns:
+              - column:
+                  name: "user_id"
+                  type: "bigint"
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: "transaction"
+            baseColumnNames: "user_id"
+            referencedTableName: "users"
+            referencedColumnNames: "id"
+            constraintName: "fk_transaction_user"
