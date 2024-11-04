@@ -151,3 +151,15 @@ databaseChangeLog:
             referencedTableName: "bank_account"
             referencedColumnNames: "id"
             constraintName: "fk_transaction_bank_account"
+  - changeSet:
+      id: "6"
+      author: "simoacharouaou777"
+      changes:
+        - addColumn:
+            tableName: "bank_account"
+            columns:
+              - column:
+                  name: "status"
+                  type: "varchar(50)"
+                  constraints:
+                    nullable: false

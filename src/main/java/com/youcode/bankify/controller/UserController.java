@@ -29,8 +29,8 @@ public class UserController {
     }
 
     @PostMapping("/accounts")
-    public ResponseEntity<BankAccount> createBankAccount(@RequestBody BankAccount account){
-        BankAccount createdAccount = userService.createBankAccount(account);
+    public ResponseEntity<BankAccount> createBankAccount(@RequestBody BankAccount account, @RequestParam Long userId){
+        BankAccount createdAccount = userService.createBankAccount(account, userId);
         return ResponseEntity.ok(createdAccount);
     }
 
@@ -43,11 +43,11 @@ public class UserController {
         return ResponseEntity.ok(transactions);
     }
 
-//    @PostMapping("/transger")
-//    public ResponseEntity<String> transgerFunds(@RequestBody TransferRequest transferRequest){
-//        userService.transferFunds(transferRequest);
-//        return ResponseEntity.ok("Transfer successful");
-//    }
+    @PostMapping("/transfer")
+    public ResponseEntity<String> transferFunds(@RequestBody TransferRequest transferRequest){
+        userService.transferFunds(transferRequest);
+        return ResponseEntity.ok("Transfer successful");
+    }
 
     @PutMapping("/profile")
     public ResponseEntity<User> updateProfile(@RequestBody User user){
