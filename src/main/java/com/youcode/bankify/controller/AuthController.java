@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -42,7 +43,15 @@ public class AuthController {
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest, HttpSession session){
         String response = authService.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
         if(response.equals("Authentication successful")){
-            session.setAttribute("username", loginRequest.getUsername());
+            Optional<User> optionalUser = authService.getUserByUsername(loginRequest.getUsername());
+            if(optionalUser.isEmpty()){
+                return ResponseEntity.status(401).body(new ErrorResponse("User not found"));
+            }
+            User user = optionalUser.get();
+
+            session.setAttribute("userId", user.getId());
+            session.setAttribute("username", user.getUsername());
+
             Map<String , Object> responseBody = new HashMap<>();
             responseBody.put("message", "user logged in successfully");
             responseBody.put("sessionId", session.getId());

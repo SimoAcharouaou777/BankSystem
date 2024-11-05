@@ -55,4 +55,8 @@ public class AuthService {
             return "user not found";
         }
     }
+
+    public Optional<User> getUserByUsername(String username){
+        return userRepository.findByUsername(username);
+    }
 }

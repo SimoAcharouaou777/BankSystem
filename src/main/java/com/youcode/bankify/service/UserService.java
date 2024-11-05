@@ -8,6 +8,7 @@ import com.youcode.bankify.entity.User;
 import com.youcode.bankify.repository.AccountRepository;
 import com.youcode.bankify.repository.TransactionRepository;
 import com.youcode.bankify.repository.UserRepository;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,8 +36,20 @@ public class UserService {
     }
 
     public BankAccount createBankAccount(BankAccount account, Long userId){
-        account.setUser(userRepository.findById(userId).orElseThrow( () -> new RuntimeException("user not found")));
+        User user = userRepository.findById(userId)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+        account.setUser(user);
         account.setStatus("ACTIVE");
+        String accountNumber;
+        do{
+            accountNumber = generatedAccountNumber();
+        }while(accountRepository.existsByAccountNumber(accountNumber));
+
+        account.setAccountNumber(accountNumber);
+        if(account.getBalance() == null || account.getBalance().compareTo(BigDecimal.valueOf(100)) < 0){
+            throw new RuntimeException("Initial balance must be at least 100.00");
+        }
+
         return accountRepository.save(account);
     }
 
@@ -87,6 +100,10 @@ public class UserService {
 
     public User updateProfile(User user){
         return userRepository.save(user);
+    }
+
+    private String generatedAccountNumber(){
+        return RandomStringUtils.randomNumeric(12);
     }
 
 
