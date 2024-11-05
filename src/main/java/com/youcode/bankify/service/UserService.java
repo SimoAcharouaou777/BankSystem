@@ -1,6 +1,7 @@
 package com.youcode.bankify.service;
 
 
+import com.youcode.bankify.dto.TransactionResponse;
 import com.youcode.bankify.dto.TransferRequest;
 import com.youcode.bankify.entity.BankAccount;
 import com.youcode.bankify.entity.Transaction;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -53,9 +55,24 @@ public class UserService {
         return accountRepository.save(account);
     }
 
-    public List<Transaction> getTransactionHistory(Long userId, int page , int size){
+    public List<TransactionResponse> getTransactionHistory(Long userId, int page , int size){
         Pageable pageable  = PageRequest.of(page, size);
-        return transactionRepository.findByUserId(userId, pageable);
+        List<Transaction> transactions = transactionRepository.findByUserId(userId,pageable);
+        List<TransactionResponse> transactionResponses = transactions.stream().map(transaction -> {
+            TransactionResponse dto = new TransactionResponse();
+            dto.setAmount(transaction.getAmount());
+            dto.setDate(transaction.getDate());
+
+            if(transaction.getBankAccount().getUser().getId().equals(userId)){
+                dto.setType("SENT");
+                dto.setOtherPartyUsername(transaction.getUser().getUsername());
+            }else{
+                dto.setType("RECEIVED");
+                dto.setOtherPartyUsername(transaction.getBankAccount().getUser().getUsername());
+            }
+            return dto;
+        }).collect(Collectors.toList());
+        return transactionResponses;
     }
 
     public void transferFunds(TransferRequest transferRequest){

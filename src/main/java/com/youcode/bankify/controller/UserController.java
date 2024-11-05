@@ -1,6 +1,7 @@
 package com.youcode.bankify.controller;
 
 
+import com.youcode.bankify.dto.TransactionResponse;
 import com.youcode.bankify.dto.TransferRequest;
 import com.youcode.bankify.entity.BankAccount;
 import com.youcode.bankify.entity.Transaction;
@@ -53,7 +54,7 @@ public class UserController {
     }
 
     @GetMapping("/transactions")
-    public ResponseEntity<List<Transaction>> getTransactionHistory(
+    public ResponseEntity<List<TransactionResponse>> getTransactionHistory(
             HttpSession session,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size){
@@ -62,7 +63,7 @@ public class UserController {
             return ResponseEntity.status(401).body(null);
         }
 
-        List<Transaction> transactions = userService.getTransactionHistory(userId,page,size);
+        List<TransactionResponse> transactions = userService.getTransactionHistory(userId,page,size);
         return ResponseEntity.ok(transactions);
     }
 
