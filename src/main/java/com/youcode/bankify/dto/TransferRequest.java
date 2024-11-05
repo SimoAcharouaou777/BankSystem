@@ -5,6 +5,8 @@ public class TransferRequest {
     private Long fromAccount;
     private Long toAccount;
     private double amount;
+    private String transactionType;
+    private String frequency;
 
     public Long getFromAccount() {
         return fromAccount;
@@ -28,6 +30,22 @@ public class TransferRequest {
 
     public void setToAccount(Long toAccount) {
         this.toAccount = toAccount;
+    }
+
+    public String getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(String transactionType) {
+        this.transactionType = transactionType;
+    }
+
+    public String getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
     }
 
 }

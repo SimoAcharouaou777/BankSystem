@@ -70,17 +70,31 @@ public class UserController {
     @PostMapping("/transfer")
     public ResponseEntity<String> transferFunds(@RequestBody TransferRequest transferRequest, HttpSession session){
         Long userId = (Long) session.getAttribute("userId");
+
         if(userId == null){
             return ResponseEntity.status(401).body("Unauthorized");
         }
+
         BankAccount fromAccount = accountRepository.findById(transferRequest.getFromAccount())
                         .orElseThrow(() -> new RuntimeException("From account not found"));
+
         if(!fromAccount.getUser().getId().equals(userId)){
             return ResponseEntity.status(403).body("You are not authorized to transfer from this account");
         }
 
-        userService.transferFunds(transferRequest);
-        return ResponseEntity.ok("Transfer successful");
+        if("PERMANENT".equalsIgnoreCase(transferRequest.getTransactionType())){
+            if(transferRequest.getFrequency() == null || transferRequest.getFrequency().isEmpty()){
+                return ResponseEntity.badRequest().body("Frequency is required for permanent transfers");
+            }
+            userService.schedulePermanentTransfer(transferRequest);
+            return ResponseEntity.ok("Permanent transfer scheduled successfully");
+        }else{
+            userService.transferFunds(transferRequest);
+            return ResponseEntity.ok("Transfer successful");
+        }
+
+
+
     }
 
     @PutMapping("/profile")
