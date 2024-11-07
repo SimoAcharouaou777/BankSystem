@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import com.youcode.bankify.entity.Role;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
@@ -21,6 +22,21 @@ public class User {
 
     @Column(name = "enabled" )
     private boolean enabled = true;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "date_of_birth" , nullable = false)
+    private LocalDate dateOfBirth;
+
+    @Column(name = "age" , nullable = false)
+    private Integer age;
+
+     @Column(name = "identity_number" , unique = true , nullable = false)
+     private String identityNumber;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -72,4 +88,23 @@ public class User {
         this.roles = roles;
     }
 
+    public String getFirstName() {return firstName;}
+
+    public Integer getAge() {return age;}
+
+    public LocalDate getDateOfBirth() {return dateOfBirth;}
+
+    public String getLastName() {return lastName;}
+
+    public void setLastName(String lastName) {this.lastName = lastName;}
+
+    public void setFirstName(String firstName) {this.firstName = firstName;}
+
+    public void setAge(Integer age) {this.age = age;}
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {this.dateOfBirth = dateOfBirth;}
+
+    public String getIdentityNumber() {return identityNumber;}
+
+    public void setIdentityNumber(String identityNumber) {this.identityNumber = identityNumber;}
 }

@@ -242,3 +242,40 @@ databaseChangeLog:
             referencedTableName: "bank_account"
             referencedColumnNames: "id"
             constraintName: "fk_scheduled_transfer_to_account"
+  - changeSet:
+      id: "9"
+      author: "SimoAcharouaou777"
+      runOnChange: false
+      changes:
+        - addColumn:
+            tableName: "users"
+            columns:
+              - column:
+                  name: "first_name"
+                  type: "varchar(255)"
+                  defaultValue: "Unknown"
+                  constraints:
+                    nullable: true
+              - column:
+                  name: "last_name"
+                  type: "varchar(255)"
+                  defaultValue: "Unknown"
+                  constraints:
+                    nullable: true
+              - column:
+                  name: "identity_number"
+                  type: "varchar(255)"
+                  constraints:
+                    nullable: true
+                    unique: true
+              - column:
+                  name: "date_of_birth"
+                  type: "date"
+                  constraints:
+                    nullable: true
+              - column:
+                  name: "age"
+                  type: "integer"
+                  constraints:
+                    nullable: true
+

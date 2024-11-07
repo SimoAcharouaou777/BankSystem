@@ -1,6 +1,7 @@
 package com.youcode.bankify.service;
 
 
+import com.youcode.bankify.dto.AccountCreationDTO;
 import com.youcode.bankify.dto.TransactionResponse;
 import com.youcode.bankify.dto.TransferRequest;
 import com.youcode.bankify.entity.BankAccount;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,22 +44,38 @@ public class UserService {
         return accountRepository.findByUserId(userId, pageable).getContent();
     }
 
-    public BankAccount createBankAccount(BankAccount account, Long userId){
+    public BankAccount createBankAccount(AccountCreationDTO accountCreationDTO, Long userId){
         User user = userRepository.findById(userId)
                         .orElseThrow(() -> new RuntimeException("User not found"));
+        if(user.getIdentityNumber() == null){
+            user.setFirstName(accountCreationDTO.getFirstName());
+            user.setLastName(accountCreationDTO.getLastName());
+            user.setIdentityNumber(accountCreationDTO.getIdentityNumber());
+            user.setDateOfBirth(accountCreationDTO.getDateOfBirth());
+            int age = LocalDate.now().getYear() - accountCreationDTO.getDateOfBirth().getYear();
+            user.setAge(age);
+
+            if(age < 18){
+                throw new RuntimeException("you must be at least 18 years old to be able to create you own account");
+            }
+            userRepository.save(user);
+        }
+
+        BankAccount account = new BankAccount();
         account.setUser(user);
         account.setStatus("ACTIVE");
+
         String accountNumber;
         do{
             accountNumber = generatedAccountNumber();
         }while(accountRepository.existsByAccountNumber(accountNumber));
 
         account.setAccountNumber(accountNumber);
-        if(account.getBalance() == null || account.getBalance().compareTo(BigDecimal.valueOf(100)) < 0){
-            throw new RuntimeException("Initial balance must be at least 100.00");
-        }
+        account.setBalance(BigDecimal.valueOf(100));
+        BankAccount savedAccount = accountRepository.save(account);
 
-        return accountRepository.save(account);
+
+        return savedAccount;
     }
 
     public List<TransactionResponse> getTransactionHistory(Long userId, int page , int size){
@@ -88,7 +106,6 @@ public class UserService {
         BankAccount toAccount = accountRepository.findById(transferRequest.getToAccount())
                 .orElseThrow(() -> new RuntimeException("To account not found"));
 
-        // Process the actual transfer and create transactions
         processTransfer(fromAccount, toAccount, BigDecimal.valueOf(transferRequest.getAmount()), transactionFee);
     }
 
@@ -107,7 +124,6 @@ public class UserService {
     }
 
     private void processTransfer(BankAccount fromAccount, BankAccount toAccount, BigDecimal transferAmount, BigDecimal transactionFee) {
-        // Deduct from sender's account (including fees)
         fromAccount.setBalance(fromAccount.getBalance().subtract(transferAmount.add(transactionFee)));
         toAccount.setBalance(toAccount.getBalance().add(transferAmount));
 

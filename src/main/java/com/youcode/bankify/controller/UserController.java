@@ -1,13 +1,11 @@
 package com.youcode.bankify.controller;
 
 
-import com.youcode.bankify.dto.TransactionRequest;
-import com.youcode.bankify.dto.TransactionResponse;
-import com.youcode.bankify.dto.TransferRequest;
-import com.youcode.bankify.entity.BankAccount;
-import com.youcode.bankify.entity.Transaction;
-import com.youcode.bankify.entity.User;
+import com.youcode.bankify.dto.*;
+import com.youcode.bankify.entity.*;
 import com.youcode.bankify.repository.AccountRepository;
+import com.youcode.bankify.service.InvoiceService;
+import com.youcode.bankify.service.LoanService;
 import com.youcode.bankify.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +23,10 @@ public class UserController {
     UserService userService;
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private InvoiceService invoiceService;
+    @Autowired
+    private LoanService loanService;
 
     @GetMapping("/accounts")
     public ResponseEntity<List<BankAccount>> getBankAccounts(
@@ -41,13 +43,13 @@ public class UserController {
     }
 
     @PostMapping("/accounts")
-    public ResponseEntity<BankAccount> createBankAccount(@RequestBody BankAccount account,HttpSession session ){
+    public ResponseEntity<BankAccount> createBankAccount(@RequestBody AccountCreationDTO accountCreationDTO,HttpSession session ){
         Long userId = (Long) session.getAttribute("userId");
         if(userId == null){
             return ResponseEntity.status(401).body(null);
         }
         try{
-            BankAccount createdAccount = userService.createBankAccount(account, userId);
+            BankAccount createdAccount = userService.createBankAccount(accountCreationDTO, userId);
             return ResponseEntity.ok(createdAccount);
         }catch (RuntimeException e){
             return ResponseEntity.badRequest().body(null);
@@ -134,4 +136,55 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @PostMapping("/invoices")
+    public ResponseEntity<Invoice> createInvoice(@RequestBody InvoiceRequestDTO invoiceRequest, HttpSession session){
+        Long userId = (Long) session.getAttribute("userId");
+        if(userId == null){
+            return ResponseEntity.status(401).body(null);
+        }
+        Invoice invoice = invoiceService.createInvoice(invoiceRequest,userId);
+        return ResponseEntity.ok(invoice);
+    }
+
+    @GetMapping("/invoices")
+    public ResponseEntity<List<InvoiceResponseDTO>> getInvoices(HttpSession session){
+        Long userId = (Long) session.getAttribute("userId");
+        if(userId == null){
+            return ResponseEntity.status(401).body(null);
+        }
+        List<InvoiceResponseDTO> invoices = invoiceService.getInvoices(userId);
+            return ResponseEntity.ok(invoices);
+
+    }
+
+    @PutMapping("/invoices/{id}/status")
+    public ResponseEntity<Invoice> updateInvoiceStatus(@PathVariable Long id , @RequestParam String status){
+        Invoice invoice = invoiceService.updateInvoiceStatus(id,status);
+        return ResponseEntity.ok(invoice);
+    }
+
+    @PostMapping("/loans")
+    public ResponseEntity<Loan> applyForLoan(@RequestBody LoanRequestDTO loanRequest, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(401).body(null);
+        }
+        Loan loan = loanService.applyForLoan(loanRequest, userId);
+        return ResponseEntity.ok(loan);
+    }
+    @GetMapping("/loans")
+    public ResponseEntity<List<LoanResponseDTO>> getLoans(HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(401).body(null);
+        }
+        List<LoanResponseDTO> loans = loanService.getLoans(userId);
+        return ResponseEntity.ok(loans);
+    }
+    @PutMapping("/loans/{id}/status")
+    public ResponseEntity<Loan> approveOrRejectLoan(@PathVariable Long id, @RequestParam String status) {
+        Loan loan = loanService.approveOrRejectLoan(id, status);
+        return ResponseEntity.ok(loan);
+    }
+
 }
