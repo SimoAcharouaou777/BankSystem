@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "scheduledTransfer")
+@Table(name = "scheduled_transfer")
 @Getter
 @Setter
 public class ScheduledTransfer {
@@ -31,7 +31,7 @@ public class ScheduledTransfer {
     private String frequency;
 
     @Column(nullable = false)
-    private LocalDateTime nexExecutionDate;
+    private LocalDateTime nextExecutionDate;
 
     @Column
     private LocalDateTime endDate;

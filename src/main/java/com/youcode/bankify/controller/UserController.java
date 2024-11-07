@@ -1,6 +1,7 @@
 package com.youcode.bankify.controller;
 
 
+import com.youcode.bankify.dto.TransactionRequest;
 import com.youcode.bankify.dto.TransactionResponse;
 import com.youcode.bankify.dto.TransferRequest;
 import com.youcode.bankify.entity.BankAccount;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -101,5 +103,35 @@ public class UserController {
     public ResponseEntity<User> updateProfile(@RequestBody User user){
         User updateUser = userService.updateProfile(user);
         return ResponseEntity.ok(updateUser);
+    }
+
+    @PostMapping("/deposit")
+    public ResponseEntity<String> depositMoney(@RequestBody TransactionRequest transactionRequest, HttpSession session){
+        Long userId = (Long) session.getAttribute("userId");
+        if(userId == null){
+            return ResponseEntity.status(401).body("unauthorized");
+        }
+
+        try{
+            userService.depositMoney(userId, transactionRequest.getAccountId(), transactionRequest.getAmount());
+            return ResponseEntity.ok("Money deposited successfully");
+        }catch (RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/withdraw")
+    public ResponseEntity<String> withdrawMoney(@RequestBody TransactionRequest transactionRequest, HttpSession session){
+        Long userId = (Long) session.getAttribute("userId");
+        if(userId == null){
+            return ResponseEntity.status(401).body("unauthorized");
+        }
+
+        try{
+            userService.withdrawMoney(userId, transactionRequest.getAccountId(), transactionRequest.getAmount());
+            return ResponseEntity.ok("Money withdrawn successfully");
+        }catch (RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

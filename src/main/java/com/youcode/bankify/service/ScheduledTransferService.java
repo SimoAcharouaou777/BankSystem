@@ -34,7 +34,7 @@ public class ScheduledTransferService {
 
                 userService.transferFunds(transferRequest);
 
-                transfer.setNexExecutionDate(calculateNextExecutionDate(transfer));
+                transfer.setNextExecutionDate(calculateNextExecutionDate(transfer));
                 scheduledTransferRepository.save(transfer);
             }catch (Exception e){
                 System.out.println("Error executing transfer: " +e.getMessage());
@@ -42,7 +42,7 @@ public class ScheduledTransferService {
         }
     }
     private LocalDateTime calculateNextExecutionDate(ScheduledTransfer transfer){
-        LocalDateTime nextExecutionDate = transfer.getNexExecutionDate();
+        LocalDateTime nextExecutionDate = transfer.getNextExecutionDate();
 
         switch (transfer.getFrequency().toUpperCase()){
             case "WEEKLY":

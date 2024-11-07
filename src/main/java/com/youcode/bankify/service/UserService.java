@@ -101,7 +101,7 @@ public class UserService {
         scheduledTransfer.setAmount(BigDecimal.valueOf(transferRequest.getAmount()));
         scheduledTransfer.setFrequency(transferRequest.getFrequency().toUpperCase());
         LocalDateTime nextExecutionDate = calculateInitialExecutionDate(transferRequest.getFrequency());
-        scheduledTransfer.setNexExecutionDate(nextExecutionDate);
+        scheduledTransfer.setNextExecutionDate(nextExecutionDate);
 
         scheduledTransferRepository.save(scheduledTransfer);
     }
@@ -175,6 +175,34 @@ public class UserService {
 
     private String generatedAccountNumber(){
         return RandomStringUtils.randomNumeric(12);
+    }
+
+    public void depositMoney(Long userId , Long accountId , BigDecimal amount){
+        BankAccount account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        if(!account.getUser().getId().equals(userId)){
+            throw new RuntimeException("You are not authorized to deposit to this account");
+        }
+
+        account.setBalance(account.getBalance().add(amount));
+        accountRepository.save(account);
+    }
+
+    public void withdrawMoney(Long userId , Long accountId , BigDecimal amount){
+        BankAccount account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        if(!account.getUser().getId().equals(userId)){
+            throw  new RuntimeException("You are not  authorized to withdraw from this account");
+        }
+
+        if(account.getBalance().compareTo(amount) < 0){
+            throw new RuntimeException("Insufficient fund for withdrawal");
+        }
+
+        account.setBalance(account.getBalance().subtract(amount));
+        accountRepository.save(account);
     }
 
 

@@ -181,3 +181,64 @@ databaseChangeLog:
             referencedTableName: "users"
             referencedColumnNames: "id"
             constraintName: "fk_transaction_user"
+  - changeSet:
+      id: "8"
+      author: "SimoAcharouaou777"
+      preConditions:
+        - onFail: "MARK_RAN"
+          not:
+            tableExists:
+              tableName: "scheduled_transfer"
+      changes:
+        - createTable:
+            tableName: "scheduled_transfer"
+            columns:
+              - column:
+                  name: "id"
+                  type: "bigint"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "from_account_id"
+                  type: "bigint"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "to_account_id"
+                  type: "bigint"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "amount"
+                  type: "decimal(19,2)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "frequency"
+                  type: "varchar(255)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "next_execution_date"
+                  type: "timestamp"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "end_date"
+                  type: "timestamp"
+                  constraints:
+                    nullable: true
+        - addForeignKeyConstraint:
+            baseTableName: "scheduled_transfer"
+            baseColumnNames: "from_account_id"
+            referencedTableName: "bank_account"
+            referencedColumnNames: "id"
+            constraintName: "fk_scheduled_transfer_from_account"
+        - addForeignKeyConstraint:
+            baseTableName: "scheduled_transfer"
+            baseColumnNames: "to_account_id"
+            referencedTableName: "bank_account"
+            referencedColumnNames: "id"
+            constraintName: "fk_scheduled_transfer_to_account"
