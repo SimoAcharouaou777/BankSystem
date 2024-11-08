@@ -4,6 +4,7 @@ package com.youcode.bankify.controller;
 import com.youcode.bankify.dto.ErrorResponse;
 import com.youcode.bankify.dto.LoginRequest;
 import com.youcode.bankify.dto.RegisterRequest;
+import com.youcode.bankify.entity.Role;
 import com.youcode.bankify.entity.User;
 import com.youcode.bankify.repository.UserRepository;
 import com.youcode.bankify.service.AuthService;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -51,6 +53,7 @@ public class AuthController {
 
             session.setAttribute("userId", user.getId());
             session.setAttribute("username", user.getUsername());
+            session.setAttribute("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toSet()));
 
             Map<String , Object> responseBody = new HashMap<>();
             responseBody.put("message", "user logged in successfully");

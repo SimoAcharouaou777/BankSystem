@@ -1,6 +1,9 @@
 package com.youcode.bankify.dto;
 
+import org.w3c.dom.stylesheets.LinkStyle;
+
 import java.time.LocalDate;
+import java.util.List;
 
 public class RegisterRequest {
 
@@ -10,6 +13,7 @@ public class RegisterRequest {
     private String lastName;
     private LocalDate dateOfBirth;
     private String identityNumber;
+    private List<String> roles;
 
     public String getPassword() {
         return password;
@@ -57,6 +61,14 @@ public class RegisterRequest {
 
     public void setIdentityNumber(String identityNumber) {
         this.identityNumber = identityNumber;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 
 }

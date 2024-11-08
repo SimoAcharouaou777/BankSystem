@@ -278,4 +278,99 @@ databaseChangeLog:
                   type: "integer"
                   constraints:
                     nullable: true
+  - changeSet:
+      id: "10"
+      author: "SimoAcharouaou777"
+      changes:
+        - createTable:
+            tableName: "invoice"
+            columns:
+              - column:
+                  name: "id"
+                  type: "bigint"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "invoice_number"
+                  type: "varchar(255)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "description"
+                  type: "varchar(255)"
+                  constraints:
+                    nullable: true
+              - column:
+                  name: "amount"
+                  type: "decimal(19,2)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "status"
+                  type: "varchar(50)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "due_date"
+                  type: "date"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "user_id"
+                  type: "bigint"
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: "invoice"
+            baseColumnNames: "user_id"
+            referencedTableName: "users"
+            referencedColumnNames: "id"
+            constraintName: "fk_invoice_user"
 
+  - changeSet:
+      id: "11"
+      author: "SimoAcharouaou777"
+      changes:
+        - createTable:
+            tableName: "loan"
+            columns:
+              - column:
+                  name: "id"
+                  type: "bigint"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "amount"
+                  type: "decimal(19,2)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "term_in_months"
+                  type: "int"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "status"
+                  type: "varchar(50)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "application_date"
+                  type: "timestamp"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "user_id"
+                  type: "bigint"
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: "loan"
+            baseColumnNames: "user_id"
+            referencedTableName: "users"
+            referencedColumnNames: "id"
+            constraintName: "fk_loan_user"
