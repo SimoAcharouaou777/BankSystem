@@ -43,6 +43,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest, HttpSession session){
+
         String response = authService.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
         if(response.equals("Authentication successful")){
             Optional<User> optionalUser = authService.getUserByUsername(loginRequest.getUsername());
@@ -63,6 +64,14 @@ public class AuthController {
         } else {
             return ResponseEntity.badRequest().body(new ErrorResponse(response));
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpSession session){
+        if(session != null){
+            session.invalidate();
+        }
+        return ResponseEntity.ok("Logged out successfully");
     }
 
 

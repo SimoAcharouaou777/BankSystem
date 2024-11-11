@@ -10,6 +10,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,6 +42,7 @@ public class UserSeeder implements CommandLineRunner {
             adminUser.setLastName("admin");
             adminUser.setDateOfBirth(LocalDate.of(1980, 1, 1));
             adminUser.setIdentityNumber("111111111");
+            adminUser.setAge(calculateAge(adminUser.getDateOfBirth()));
             adminUser.setEnabled(true);
             adminUser.setRoles(new HashSet<>(Set.of(adminRole)));
 
@@ -51,6 +53,7 @@ public class UserSeeder implements CommandLineRunner {
             normalUser.setLastName("User");
             normalUser.setDateOfBirth(LocalDate.of(1990, 1, 1));
             normalUser.setIdentityNumber("222222222");
+            normalUser.setAge(calculateAge(adminUser.getDateOfBirth()));
             normalUser.setEnabled(true);
             normalUser.setRoles(new HashSet<>(Set.of(userRole)));
 
@@ -61,6 +64,7 @@ public class UserSeeder implements CommandLineRunner {
             employeeUser.setLastName("employee");
             employeeUser.setDateOfBirth(LocalDate.of(1985, 1, 1));
             employeeUser.setIdentityNumber("333333333");
+            employeeUser.setAge(calculateAge(employeeUser.getDateOfBirth()));
             employeeUser.setEnabled(true);
             employeeUser.setRoles(new HashSet<>(Set.of(employeeRole)));
 
@@ -69,5 +73,12 @@ public class UserSeeder implements CommandLineRunner {
         } else {
             System.out.println("Users already exist, skipping seeding.");
         }
+    }
+
+    private int calculateAge(LocalDate birthDate){
+        if(birthDate == null){
+            return 0;
+        }
+        return Period.between(birthDate, LocalDate.now()).getYears();
     }
 }

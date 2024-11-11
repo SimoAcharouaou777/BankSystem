@@ -10,6 +10,7 @@ import com.youcode.bankify.repository.RoleRepository;
 import com.youcode.bankify.repository.UserRepository;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -56,16 +57,20 @@ public class AdminService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.setUsername(userDetails.getUsername());
         user.setEnabled(userDetails.isEnabled());
-        user.setRoles(userDetails.getRoles());
+        Set<Role> roles = userDetails.getRoles().stream()
+                        .map(role -> roleRepository.findByName(role.getName())
+                                .orElseThrow(() -> new RuntimeException("Role not found" + role.getName())))
+                                .collect(Collectors.toSet());
+        user.setRoles(roles);
 
         return userRepository.save(user);
     }
 
-    public void deleteUser(Long userId){
+    public ResponseEntity<String > deleteUser(Long userId){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         userRepository.delete(user);
-
+        return ResponseEntity.ok("User deleted successfullu");
     }
 
     public List<User> getAllUsers(){

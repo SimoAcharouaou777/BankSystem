@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/user")
@@ -47,6 +48,10 @@ public class UserController {
         Long userId = (Long) session.getAttribute("userId");
         if(userId == null){
             return ResponseEntity.status(401).body(null);
+        }
+        Set<String> roles = (Set<String>) session.getAttribute("roles");
+        if(roles == null || !roles.contains("USER")){
+            return ResponseEntity.status(403).body(null);
         }
         try{
             BankAccount createdAccount = userService.createBankAccount(accountCreationDTO, userId);

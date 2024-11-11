@@ -29,7 +29,7 @@ public class InvoiceService {
         invoice.setInvoiceNumber(request.getInvoiceNumber());
         invoice.setDescription(request.getDescription());
         invoice.setAmount(request.getAmount());
-        invoice.setStatus(request.getStatus());
+        invoice.setStatus("PENDING");
         invoice.setDueDate(request.getDueDate());
         invoice.setUser(user);
 

@@ -374,3 +374,15 @@ databaseChangeLog:
             referencedTableName: "users"
             referencedColumnNames: "id"
             constraintName: "fk_loan_user"
+  - changeSet:
+      id: "12"
+      author: "SimoAcharouaou777"
+      changes:
+        - addColumn:
+            tableName: "transaction"
+            columns:
+              - column:
+                  name: "status"
+                  type: "varchar(50)"
+                  constraints:
+                    nullable: true

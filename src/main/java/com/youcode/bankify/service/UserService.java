@@ -131,18 +131,20 @@ public class UserService {
         accountRepository.save(fromAccount);
         accountRepository.save(toAccount);
 
-        // Record transactions for both debit and credit
-        recordTransaction(fromAccount, transferAmount, "DEBIT");
-        recordTransaction(toAccount, transferAmount, "CREDIT");
+        String status = transferAmount.compareTo(BigDecimal.valueOf(5000)) > 0 ? "PENDING" : "APPROVED";
+
+        recordTransaction(fromAccount, transferAmount, "DEBIT", status);
+        recordTransaction(toAccount, transferAmount, "CREDIT", status);
     }
 
-    private void recordTransaction(BankAccount account, BigDecimal amount, String type) {
+    private void recordTransaction(BankAccount account, BigDecimal amount, String type, String status) {
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
         transaction.setType(type);
         transaction.setDate(LocalDateTime.now());
         transaction.setBankAccount(account);
         transaction.setUser(account.getUser());
+        transaction.setStatus(status);
         transactionRepository.save(transaction);
     }
 

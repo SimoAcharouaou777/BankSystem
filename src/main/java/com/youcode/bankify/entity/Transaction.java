@@ -28,6 +28,9 @@ public class Transaction {
     @Column(name = "date")
     private LocalDateTime date;
 
+    @Column(name = "status" , nullable = true)
+    private String status;
+
     @ManyToOne
     @JoinColumn(name = "bank_account_id", nullable = false)
     private BankAccount bankAccount;
