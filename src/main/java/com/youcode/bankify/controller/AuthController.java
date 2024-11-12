@@ -68,10 +68,13 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpSession session){
-        if(session != null){
-            session.invalidate();
+        if(session == null || session.getAttribute("userId") == null){
+            return ResponseEntity.status(401).body("No user is curently logged in");
         }
-        return ResponseEntity.ok("Logged out successfully");
+        Long userId = (Long) session.getAttribute("userId");
+        String username = (String) session.getAttribute("username");
+        session.invalidate();
+        return ResponseEntity.ok(" user" +username+" (ID : "+userId+ ") logged out successfulluy");
     }
 
 
