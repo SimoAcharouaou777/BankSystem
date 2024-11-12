@@ -2,9 +2,8 @@ package com.youcode.bankify.service;
 
 import com.youcode.bankify.dto.TransferRequest;
 import com.youcode.bankify.entity.ScheduledTransfer;
-import com.youcode.bankify.repository.ScheduledTransferRepository;
+import com.youcode.bankify.repository.jpa.ScheduledTransferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 

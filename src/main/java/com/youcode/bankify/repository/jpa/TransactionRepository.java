@@ -1,4 +1,4 @@
-package com.youcode.bankify.repository;
+package com.youcode.bankify.repository.jpa;
 
 import com.youcode.bankify.entity.Transaction;
 import org.springframework.data.domain.Pageable;

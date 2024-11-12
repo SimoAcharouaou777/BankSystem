@@ -6,17 +6,14 @@ import com.youcode.bankify.dto.LoginRequest;
 import com.youcode.bankify.dto.RegisterRequest;
 import com.youcode.bankify.entity.Role;
 import com.youcode.bankify.entity.User;
-import com.youcode.bankify.repository.UserRepository;
 import com.youcode.bankify.service.AuthService;
 import jakarta.servlet.http.HttpSession;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 

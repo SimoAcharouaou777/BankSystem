@@ -4,8 +4,8 @@ import com.youcode.bankify.dto.LoanRequestDTO;
 import com.youcode.bankify.dto.LoanResponseDTO;
 import com.youcode.bankify.entity.Loan;
 import com.youcode.bankify.entity.User;
-import com.youcode.bankify.repository.LoanRepository;
-import com.youcode.bankify.repository.UserRepository;
+import com.youcode.bankify.repository.jpa.LoanRepository;
+import com.youcode.bankify.repository.jpa.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

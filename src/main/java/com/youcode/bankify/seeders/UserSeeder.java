@@ -2,8 +2,8 @@ package com.youcode.bankify.seeders;
 
 import com.youcode.bankify.entity.Role;
 import com.youcode.bankify.entity.User;
-import com.youcode.bankify.repository.RoleRepository;
-import com.youcode.bankify.repository.UserRepository;
+import com.youcode.bankify.repository.jpa.RoleRepository;
+import com.youcode.bankify.repository.jpa.UserRepository;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

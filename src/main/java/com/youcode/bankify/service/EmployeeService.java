@@ -5,21 +5,14 @@ import com.youcode.bankify.entity.BankAccount;
 import com.youcode.bankify.entity.Invoice;
 import com.youcode.bankify.entity.Loan;
 import com.youcode.bankify.entity.Transaction;
-import com.youcode.bankify.repository.AccountRepository;
-import com.youcode.bankify.repository.InvoiceRepository;
-import com.youcode.bankify.repository.LoanRepository;
-import com.youcode.bankify.repository.TransactionRepository;
-import jakarta.servlet.http.HttpSession;
+import com.youcode.bankify.repository.jpa.AccountRepository;
+import com.youcode.bankify.repository.jpa.InvoiceRepository;
+import com.youcode.bankify.repository.jpa.LoanRepository;
+import com.youcode.bankify.repository.jpa.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class EmployeeService {

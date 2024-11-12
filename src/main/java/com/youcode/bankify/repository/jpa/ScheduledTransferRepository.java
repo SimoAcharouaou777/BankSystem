@@ -1,4 +1,4 @@
-package com.youcode.bankify.repository;
+package com.youcode.bankify.repository.jpa;
 
 import com.youcode.bankify.entity.ScheduledTransfer;
 import org.springframework.data.jpa.repository.JpaRepository;

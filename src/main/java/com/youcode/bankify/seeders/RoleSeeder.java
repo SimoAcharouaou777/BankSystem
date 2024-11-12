@@ -2,13 +2,12 @@ package com.youcode.bankify.seeders;
 
 
 import com.youcode.bankify.entity.Role;
-import com.youcode.bankify.repository.RoleRepository;
+import com.youcode.bankify.repository.jpa.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.List;
 
 @Component
 public class RoleSeeder implements CommandLineRunner {

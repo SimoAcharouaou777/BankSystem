@@ -8,13 +8,13 @@ import com.youcode.bankify.entity.BankAccount;
 import com.youcode.bankify.entity.ScheduledTransfer;
 import com.youcode.bankify.entity.Transaction;
 import com.youcode.bankify.entity.User;
-import com.youcode.bankify.repository.AccountRepository;
-import com.youcode.bankify.repository.ScheduledTransferRepository;
-import com.youcode.bankify.repository.TransactionRepository;
-import com.youcode.bankify.repository.UserRepository;
+import com.youcode.bankify.repository.jpa.AccountRepository;
+import com.youcode.bankify.repository.jpa.ScheduledTransferRepository;
+import com.youcode.bankify.repository.jpa.TransactionRepository;
+import com.youcode.bankify.repository.jpa.UserRepository;
+import com.youcode.bankify.repository.elasticsearch.TransactionSearchRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +38,8 @@ public class UserService {
     UserRepository userRepository;
     @Autowired
     private ScheduledTransferRepository scheduledTransferRepository;
+    @Autowired
+    private TransactionSearchRepository transactionSearchRepository;
 
     public List<BankAccount> getBankAccounts(Long userId, int page , int size){
         Pageable pageable = PageRequest.of(page,size);
@@ -223,6 +224,10 @@ public class UserService {
         account.setBalance(account.getBalance().subtract(amount));
         accountRepository.save(account);
     }
+
+//    public List<Transaction> searchTransactions(BigDecimal amount, String type, String status, LocalDateTime startDate, LocalDateTime endDate) {
+//        return transactionSearchRepository.searchByCriteria(amount, type, status, startDate, endDate);
+//    }
 
 
 
