@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
 
     private final AuthService authService;
@@ -31,10 +32,14 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest){
         String response = authService.register(registerRequest);
+        Map<String , String > responseBody = new HashMap<>();
+
         if(response.equals("user registered sucessfully")){
-            return ResponseEntity.ok(response);
+            responseBody.put("message" , "User registered successfully");
+            return ResponseEntity.ok(responseBody);
         }else{
-            return ResponseEntity.badRequest().body(new ErrorResponse(response));
+            responseBody.put("message", response);
+            return ResponseEntity.badRequest().body(responseBody);
         }
     }
 
