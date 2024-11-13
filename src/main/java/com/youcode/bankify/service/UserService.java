@@ -147,6 +147,7 @@ public class UserService {
         transaction.setUser(account.getUser());
         transaction.setStatus(status);
         transactionRepository.save(transaction);
+        transactionSearchRepository.save(transaction);
     }
 
 

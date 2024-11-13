@@ -106,6 +106,10 @@
 			<artifactId>elasticsearch-java</artifactId>
 			<version>8.10.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
 	</dependencies>
 
 

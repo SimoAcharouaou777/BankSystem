@@ -8,6 +8,7 @@ import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.json.JsonData;
 import com.youcode.bankify.entity.Transaction;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import com.youcode.bankify.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -51,8 +52,8 @@ public class TransactionSearchRepositoryCustomImpl implements TransactionSearchR
                 queries.add(Query.of(q -> q
                         .range(r -> r
                                 .field("date")
-                                .gte(JsonData.of(startDate.toString()))
-                                .lte(JsonData.of(endDate.toString())))));
+                                .gte(JsonData.of(DateUtils.formatLocalDateTime(startDate)))
+                                .lte(JsonData.of(DateUtils.formatLocalDateTime(endDate))))));
             }
 
             SearchRequest.Builder searchBuilder = new SearchRequest.Builder()
