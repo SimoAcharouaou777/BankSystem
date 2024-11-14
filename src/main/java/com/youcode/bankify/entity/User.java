@@ -1,5 +1,6 @@
 package com.youcode.bankify.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.youcode.bankify.util.serializer.LocalDateDeserializer;
 import com.youcode.bankify.util.serializer.LocalDateTimeDeserializer;
@@ -33,6 +34,7 @@ public class User {
     private String lastName;
 
     @Column(name = "date_of_birth" , nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate dateOfBirth;
 
