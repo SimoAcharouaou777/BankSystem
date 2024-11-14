@@ -69,10 +69,27 @@ class AuthServiceTest {
     }
 
     @Test
-    void authenticate() {
+    public void authenticate() {
+        when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(user));
+
+        String response = authService.authenticate("testuser","password");
+        assertEquals("Authentication successful" , response);
     }
 
-    @Test
-    void getUserByUsername() {
-    }
+     @Test
+     public void authenticateWithWrongPassword(){
+        when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(user));
+
+        String response = authService.authenticate("testuser","ostohohiz");
+        assertEquals("Invalid password" , response);
+     }
+
+     @Test
+     public void authenticateWithWrongUserName(){
+        when(userRepository.findByUsername("nonExistUsers")).thenReturn(Optional.empty());
+
+        String response = authService.authenticate("nonExistUsers","password");
+        assertEquals("user not found", response);
+     }
+
 }
