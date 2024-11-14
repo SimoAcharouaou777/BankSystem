@@ -1,6 +1,8 @@
 package com.youcode.bankify.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.youcode.bankify.util.serializer.LocalDateTimeDeserializer;
 import jakarta.persistence.*;
@@ -14,7 +16,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Document(indexName = "transaction")
+@Document(indexName = "transactions")
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Table(name = "Transaction")
 public class Transaction {
 
@@ -31,6 +34,7 @@ public class Transaction {
     private String type;
 
     @Column(name = "date")
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime date;
 

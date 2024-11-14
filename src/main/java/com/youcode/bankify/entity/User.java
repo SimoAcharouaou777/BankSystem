@@ -1,5 +1,8 @@
 package com.youcode.bankify.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.youcode.bankify.util.serializer.LocalDateDeserializer;
+import com.youcode.bankify.util.serializer.LocalDateTimeDeserializer;
 import jakarta.persistence.*;
 import lombok.Builder;
 import com.youcode.bankify.entity.Role;
@@ -30,6 +33,7 @@ public class User {
     private String lastName;
 
     @Column(name = "date_of_birth" , nullable = false)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate dateOfBirth;
 
     @Column(name = "age" , nullable = false)

@@ -33,6 +33,8 @@ public class IndexInitializer {
                                 .properties("type", p -> p.keyword(k -> k))
                                 .properties("status", p -> p.keyword(k -> k))
                                 .properties("date", p -> p.date(d -> d.format("yyyy-MM-dd'T'HH:mm:ss")))
+                                .properties("bankAccount", p -> p.object(o -> o))
+                                .properties("user", p -> p.object(o -> o))
                         )
                         .build();
 

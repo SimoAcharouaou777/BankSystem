@@ -7,28 +7,27 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 
-public class LocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
+public class LocalDateDeserializer extends JsonDeserializer<LocalDate> {
 
     @Override
-    public LocalDateTime deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public LocalDate deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         String date = p.getText();
-        try{
+        try {
             long timestamp = Long.parseLong(date);
-            return Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDateTime();
-        }catch (NumberFormatException e){
+            return Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDate();
+        } catch (NumberFormatException e) {
             DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-                    .appendPattern("yyyy-MM-dd'T'HH:mm:ss")
+                    .appendPattern("yyyy-MM-dd")
                     .optionalStart().appendPattern("[.SSS]").optionalEnd()
                     .optionalStart().appendOffset("+HH:mm", "Z").optionalEnd()
                     .toFormatter();
 
-            return LocalDateTime.parse(date, formatter);
+            return LocalDate.parse(date, formatter);
         }
-
     }
 }
