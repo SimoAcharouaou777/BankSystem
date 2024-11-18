@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Set;
 
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
@@ -25,9 +26,14 @@ public class AdminController {
 
     private void checkAdminRole(HttpSession session){
         Set<String> roles = (Set<String>) session.getAttribute("roles");
-        if(roles == null || !roles.contains("ADMIN")){
+        if(roles == null ){
+            System.out.println("Roles are null in session , access denied");
             throw new RuntimeException("Access denied ");
+        } else if (!roles.contains("ADMIN")) {
+            System.out.println("User does not have ADMIN role , roles present : "+roles);
+            throw new RuntimeException("Access denied");
         }
+        System.out.println("Access granted. Roles: " +roles);
     }
 
     @PostMapping("/users")

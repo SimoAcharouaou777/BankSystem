@@ -15,11 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
 
     private final AuthService authService;
@@ -54,14 +55,19 @@ public class AuthController {
             }
             User user = optionalUser.get();
 
+            Set<String > roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
             session.setAttribute("userId", user.getId());
             session.setAttribute("username", user.getUsername());
-            session.setAttribute("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toSet()));
+            session.setAttribute("roles", roles);
+
+            System.out.println("Session ID after login : "+session.getId());
+            System.out.println("Roles in session after login : "+roles);
 
             Map<String , Object> responseBody = new HashMap<>();
             responseBody.put("message", "user logged in successfully");
             responseBody.put("sessionId", session.getId());
             responseBody.put("username", session.getAttribute("username"));
+            responseBody.put("roles", session.getAttribute("roles"));
             return ResponseEntity.ok(responseBody);
         } else {
             return ResponseEntity.badRequest().body(new ErrorResponse(response));
