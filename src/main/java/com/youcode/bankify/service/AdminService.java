@@ -84,4 +84,8 @@ public class AdminService {
         account.setStatus(status.toUpperCase());
         return accountRepository.save(account);
     }
+
+    public List<BankAccount> getAllBankAccounts(){return accountRepository.findAll();}
+
+
 }

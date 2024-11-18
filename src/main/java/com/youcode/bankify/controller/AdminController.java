@@ -70,6 +70,12 @@ public class AdminController {
         BankAccount updatedAccount = adminService.updateAccountStatus(accountId, status);
         return ResponseEntity.ok(updatedAccount);
     }
+    @GetMapping("/accounts")
+    public ResponseEntity<List<BankAccount>> getAllBankAccounts(HttpSession session){
+        checkAdminRole(session);
+        List<BankAccount> bankAccounts = adminService.getAllBankAccounts();
+        return ResponseEntity.ok(bankAccounts);
+    }
 
 
 
