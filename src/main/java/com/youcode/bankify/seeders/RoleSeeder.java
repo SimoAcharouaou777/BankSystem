@@ -5,11 +5,13 @@ import com.youcode.bankify.entity.Role;
 import com.youcode.bankify.repository.jpa.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
 @Component
+@Order(1)
 public class RoleSeeder implements CommandLineRunner {
 
     @Autowired
