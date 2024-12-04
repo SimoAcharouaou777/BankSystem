@@ -8,6 +8,9 @@ import com.youcode.bankify.service.AuthService;
 import com.youcode.bankify.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -21,11 +24,13 @@ public class AuthController {
 
     private final AuthService authService;
     private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthController(AuthService authService, JwtUtil jwtUtil) {
+    public AuthController(AuthService authService, JwtUtil jwtUtil, AuthenticationManager authenticationManager) {
         this.authService = authService;
         this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
     }
 
     @PostMapping("/register")
@@ -44,21 +49,23 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
-        String response = authService.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
-        if (response.equals("Authentication successful")) {
-            Optional<User> optionalUser = authService.getUserByUsername(loginRequest.getUsername());
-            if (optionalUser.isEmpty()) {
-                return ResponseEntity.status(401).body(new ErrorResponse("User not found"));
-            }
-            User user = optionalUser.get();
-            String token = jwtUtil.generateToken(user);
+       try{
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+            );
+            final User user = authService.getUserByUsername(loginRequest.getUsername())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            final String jwt = jwtUtil.generateToken(user);
 
-            Map<String, String> responseBody = new HashMap<>();
-            responseBody.put("message", "User logged in successfully");
-            responseBody.put("token", token);
-            return ResponseEntity.ok(responseBody);
-        } else {
-            return ResponseEntity.badRequest().body(new ErrorResponse(response));
-        }
+            if(jwt == null || jwt.split("\\.").length != 3){
+                return ResponseEntity.status(500).body("Internal server error: Invalid JWT format");
+            }
+
+            Map<String , String > response = new HashMap<>();
+            response.put("token", jwt);
+            return ResponseEntity.ok(response);
+       } catch (AuthenticationException e){
+           return ResponseEntity.status(401).body("Invalid username or password");
+       }
     }
 }
