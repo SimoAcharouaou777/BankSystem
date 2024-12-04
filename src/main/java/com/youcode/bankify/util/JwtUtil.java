@@ -3,6 +3,7 @@ package com.youcode.bankify.util;
 import com.youcode.bankify.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -19,17 +20,27 @@ public class JwtUtil {
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, user.getUsername());
+        String token = createToken(claims, user.getUsername());
+        if(token == null || token.split("\\.").length != 3){
+            throw new RuntimeException("Invalid token");
+        }
+        return token;
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY) // HS256 is suitable for symmetric keys
-                .compact();
+        try{
+            String token = Jwts.builder()
+                    .setClaims(claims)
+                    .setSubject(subject)
+                    .setIssuedAt(new Date(System.currentTimeMillis()))
+                    .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                    .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                    .compact();
+            return token;
+        } catch (Exception e){
+            System.err.println("Error while generating token: "+e.getMessage());
+            throw new RuntimeException("Error  generating JWT", e);
+        }
     }
 
     public String extractUsername(String token) {
@@ -42,10 +53,18 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token)
-                .getBody();
+        try{
+            return Jwts.parser()
+                    .setSigningKey(SECRET_KEY)
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (MalformedJwtException e){
+            System.err.println("Malformed JWT Token: " +token);
+            throw new RuntimeException("Malformed JWT Token", e);
+        } catch (Exception e){
+            System.err.println("Error extracting claims: "+e.getMessage());
+            throw new RuntimeException("Error extracting claims", e);
+        }
     }
 
     public Boolean isTokenExpired(String token) {
