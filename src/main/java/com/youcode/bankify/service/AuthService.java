@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.security.sasl.AuthenticationException;
@@ -25,11 +26,13 @@ public class AuthService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthService(UserRepository userRepository, RoleRepository roleRepository) {
+    public AuthService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public String register(RegisterRequest registerRequest) {
@@ -38,7 +41,7 @@ public class AuthService implements UserDetailsService {
         }
         User user = new User();
         user.setUsername(registerRequest.getUsername());
-        user.setPassword(BCrypt.hashpw(registerRequest.getPassword(), BCrypt.gensalt()));
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setEnabled(true);
 
         Role userRole = roleRepository.findByName("USER")

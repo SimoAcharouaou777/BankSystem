@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -16,24 +17,30 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    private final String SECRET_KEY = "SimoAcharouaou777"; // Your secret key should be kept safe and secure
+    @Value("${jwt.secret}")
+    private  String SECRET_KEY ;
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        String token = createToken(claims, user.getUsername());
+        String token = createToken(claims, user.getUsername(), 1000 * 60 * 60 );
         if(token == null || token.split("\\.").length != 3){
             throw new RuntimeException("Invalid token");
         }
         return token;
     }
 
-    private String createToken(Map<String, Object> claims, String subject) {
+    public String generateRefreshToken(User user) {
+        Map<String , Object> claims = new HashMap<>();
+        return createToken(claims, user.getUsername(), 1000 * 60 * 60 * 24 * 30);
+    }
+
+    private String createToken(Map<String, Object> claims, String subject, long expirationTime) {
         try{
             String token = Jwts.builder()
                     .setClaims(claims)
                     .setSubject(subject)
                     .setIssuedAt(new Date(System.currentTimeMillis()))
-                    .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                    .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                     .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                     .compact();
             return token;
