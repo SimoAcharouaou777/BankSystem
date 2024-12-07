@@ -1,5 +1,6 @@
 package com.youcode.bankify.util;
 
+import com.youcode.bankify.entity.Role;
 import com.youcode.bankify.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -13,6 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
@@ -22,6 +24,9 @@ public class JwtUtil {
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", user.getRoles().stream()
+                .map(role -> "ROLE_"+role.getName())
+                .collect(Collectors.toList()));
         String token = createToken(claims, user.getUsername(), 1000 * 60 * 60 );
         if(token == null || token.split("\\.").length != 3){
             throw new RuntimeException("Invalid token");
@@ -59,7 +64,7 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         try{
             return Jwts.parser()
                     .setSigningKey(SECRET_KEY)
